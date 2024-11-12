@@ -1,12 +1,7 @@
 ﻿using HarmonyLib;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
-using System.Text;
 using System.Threading.Tasks;
-using static Skills;
 
 namespace LaSiesta
 {
@@ -15,6 +10,8 @@ namespace LaSiesta
     [HarmonyPatch(typeof(Bed), "Interact")]
     public class BedInteractPatch
     {
+        private static bool runningSiesta = false;
+
         static bool Prefix(Humanoid human, bool repeat, bool alt, ref bool __result)
         {
             Logger.Log("** BedInteractPatch PREFIX start");
@@ -36,9 +33,9 @@ namespace LaSiesta
                 Logger.Log("** BedInteractPatch PREFIX start skip");
                 skipToBeforeNight();
 
-                __result = true;  // Returns successful interaction
+                __result = true; // Returns successful interaction
                 Logger.Log("** BedInteractPatch PREFIX end skip");
-                return false;     // Blocks running original code
+                return false; // Blocks running original code
             }
             Logger.Log("** BedInteractPatch PREFIX end");
             return true;  // Run original code if it is night
@@ -46,21 +43,30 @@ namespace LaSiesta
 
         private static void skipToBeforeNight()
         {
+            if (runningSiesta) return;
+
             Logger.Log("** skipToBeforeNight start");
 
-            turnCheatMode(true);
+            float oneDay = ConfigurationFile.oneDayLength.Value;
+            float oneHour = ConfigurationFile.oneHourLength.Value;
+            float hours = ConfigurationFile.siestaHours.Value;
+            float timeInHours = hours * oneHour;
+            Logger.Log($"One day: {oneDay}, one hour: {oneHour}, hours: {hours}, Seconds to skip: {timeInHours}");
 
-            float hours = (float)ConfigurationFile.siestaHours.Value;
             float dayFraction = (float)typeof(EnvMan).GetField("m_smoothDayFraction", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(EnvMan.instance);
-            float comparison = dayFraction + (hours*180 / 1800f); //TODO Find hardcoded value 1800 in the valheim vanilla code if the day duration is changed in another mod
-            Logger.Log($"new fraction {comparison}");
+            float comparison = dayFraction + (timeInHours / oneDay);
+            Logger.Log($"old fraction: {dayFraction}, new fraction: {comparison}");
 
-            //Not do if night coming. m_smoothDayFraction = 0,75 at 18:00. 
-            if (comparison < 0.75f) {
-                Console.instance.TryRunCommand($"skiptime {hours}");
-                _ = WaitForSecondsAsyncOnly(10);
+            //Don't do if night coming. m_smoothDayFraction = 0,75 at 18:00. 
+            if (comparison < 0.75f)
+            {
+                turnCheatMode(true);
+                Console.instance.TryRunCommand($"skiptime {timeInHours}", true);
+                turnCheatMode(false);
+                //_ = WaitForSecondsAsyncOnly(10);
             } else
             {
+                turnCheatMode(false);
                 MessageHud.instance.ShowMessage(MessageHud.MessageType.Center, "Can't take siesta yet, night is too close"); //TODO Localize
             }
         }
@@ -69,8 +75,6 @@ namespace LaSiesta
         {
             await Task.Delay((int)(Math.Max(0f, seconds) * 1000)); // to miliseconds
             Player.m_localPlayer.AttachStop();
-
-            turnCheatMode(false);
         }
 
         private static void turnCheatMode(bool cheat)

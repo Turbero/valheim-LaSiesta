@@ -29,8 +29,8 @@ namespace LaSiesta
     {
         static bool Prefix(ref bool __result)
         {
-            //Set return value to true, always can lay down on bed (but doesn't sleep if not night)
-            __result = ConfigurationFile.siestaOnlyAfternoon.Value ? EnvMan.IsAfternoon() : true;
+            //Set return value to true
+            __result = true;
             //Tell Harmony to not run the original method
             return false;
         }
