@@ -60,7 +60,7 @@ namespace LaSiesta
             } else
             {
                 turnCheatMode(false);
-                MessageHud.instance.ShowMessage(MessageHud.MessageType.Center, "Can't take siesta yet, night is too close"); //TODO Localize
+                MessageHud.instance.ShowMessage(MessageHud.MessageType.Center, ConfigurationFile.tooCloseForSiesta.Value);
             }
         }
 
