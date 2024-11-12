@@ -72,6 +72,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UIStats.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="MODGEN\CHANGELOG.md" />
+    <None Include="MODGEN\manifest.json" />
+    <None Include="MODGEN\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MODGEN\icon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if "$(ConfigurationName)" == "Release" (powershell Compress-Archive -Path '$(SolutionDir)MODGEN\*' -DestinationPath '$(SolutionDir)MODGEN\$(ProjectName).zip' -Force)

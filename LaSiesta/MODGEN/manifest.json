@@ -1,0 +1,9 @@
+{
+  "name": "LaSiesta",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/Turbero/valheim-LaSiesta",
+  "description": "Mod to skip time if you want to move forward to the night. Enjoy napping!",
+  "dependencies": [
+    "denikson-BepInExPack_Valheim-5.4.2202"
+  ]
+}
