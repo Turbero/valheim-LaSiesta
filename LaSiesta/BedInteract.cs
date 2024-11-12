@@ -14,7 +14,6 @@ namespace LaSiesta
 
         static bool Prefix(Humanoid human, bool repeat, bool alt, ref bool __result)
         {
-            Logger.Log("** BedInteractPatch PREFIX start");
             if (repeat)
             {
                 __result = false;
@@ -30,22 +29,16 @@ namespace LaSiesta
 
             if (!EnvMan.IsNight())
             {
-                Logger.Log("** BedInteractPatch PREFIX start skip");
                 skipToBeforeNight();
-
                 __result = true; // Returns successful interaction
-                Logger.Log("** BedInteractPatch PREFIX end skip");
                 return false; // Blocks running original code
             }
-            Logger.Log("** BedInteractPatch PREFIX end");
             return true;  // Run original code if it is night
         }
 
         private static void skipToBeforeNight()
         {
             if (runningSiesta) return;
-
-            Logger.Log("** skipToBeforeNight start");
 
             float oneDay = ConfigurationFile.oneDayLength.Value;
             float oneHour = ConfigurationFile.oneHourLength.Value;
