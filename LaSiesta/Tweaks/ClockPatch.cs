@@ -3,10 +3,10 @@ using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LaSiesta
+namespace LaSiesta.Tweaks
 {
     [HarmonyPatch(typeof(Hud), "Awake")]
-    public class UIStatsPatch
+    public class ClockPatch
     {
         private static Text timeText;
         public static GameObject timeTextObject;

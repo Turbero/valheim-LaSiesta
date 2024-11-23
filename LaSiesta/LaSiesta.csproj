@@ -36,6 +36,10 @@
     <Reference Include="0Harmony">
       <HintPath>..\..\..\Libs\0Harmony.dll</HintPath>
     </Reference>
+    <Reference Include="assembly_guiutils, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Libs\assembly_guiutils.dll</HintPath>
+    </Reference>
     <Reference Include="assembly_utils">
       <HintPath>..\..\..\Libs\assembly_utils.dll</HintPath>
     </Reference>
@@ -79,12 +83,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BedInteract.cs" />
     <Compile Include="ConfigurationFile.cs" />
     <Compile Include="LaSiesta.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UIStats.cs" />
+    <Compile Include="Tweaks\BedInteract.cs" />
+    <Compile Include="Tweaks\ClockPatch.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MODGEN\CHANGELOG.md" />
