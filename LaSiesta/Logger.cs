@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using BepInEx.Logging;
 
 namespace LaSiesta
 {
     public static class Logger
     {
+        public static ManualLogSource logger = BepInEx.Logging.Logger.CreateLogSource(LaSiesta.NAME);
         internal static void Log(object s)
         {
             if (!ConfigurationFile.debug.Value)
@@ -11,23 +12,22 @@ namespace LaSiesta
                 return;
             }
 
-            var toPrint = $"{LaSiesta.NAME} {LaSiesta.VERSION}: {(s != null ? s.ToString() : "null")}";
+            logger.LogInfo(s?.ToString());
+        }
 
-            Debug.Log(toPrint);
+        internal static void LogInfo(object s)
+        {
+            logger.LogInfo(s?.ToString());
         }
 
         internal static void LogWarning(object s)
         {
-            var toPrint = $"{LaSiesta.NAME} {LaSiesta.VERSION}: {(s != null ? s.ToString() : "null")}";
-
-            Debug.LogWarning(toPrint);
+            logger.LogWarning(s?.ToString());
         }
 
         internal static void LogError(object s)
         {
-            var toPrint = $"{LaSiesta.NAME} {LaSiesta.VERSION}: {(s != null ? s.ToString() : "null")}";
-
-            Debug.LogError(toPrint);
+            logger.LogError(s?.ToString());
         }
     }
 }
