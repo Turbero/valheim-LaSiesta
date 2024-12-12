@@ -64,7 +64,7 @@ namespace LaSiesta.Tweaks
                 FieldInfo dayFractionField = typeof(EnvMan).GetField("m_smoothDayFraction", BindingFlags.NonPublic | BindingFlags.Instance);
                 if (dayFractionField == null)
                 {
-                    Debug.LogError("No se pudo acceder a m_smoothDayFraction.");
+                    Logger.LogError("Couldn't access m_smoothDayFraction.");
                     return "00:00";
                 }
 
