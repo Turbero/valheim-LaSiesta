@@ -71,9 +71,9 @@ namespace LaSiesta
         {
             RectTransform clockRT = ClockPatch.timeTextObject.transform as RectTransform;
             clockRT.anchoredPosition = new Vector2(xPosClock.Value, yPosClock.Value);
-            clockRT.GetComponent<Text>().fontSize = ConfigurationFile.fontSize.Value;
+            clockRT.GetComponent<Text>().fontSize = fontSize.Value;
             BedInteractMenu.siestaConfirmDialog.GetComponentInChildren<UIGroupHandler>().
-                transform.Find("Exit").GetComponentInChildren<TextMeshProUGUI>().text = ConfigurationFile.sleepSiestaQuestion.Value;
+                transform.Find("Exit").GetComponentInChildren<TextMeshProUGUI>().text = sleepSiestaQuestion.Value;
         }
 
         private static ConfigEntry<T> config<T>(string group, string name, T value, string description,
