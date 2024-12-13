@@ -89,6 +89,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tweaks\BedInteract.cs" />
     <Compile Include="Tweaks\ClockPatch.cs" />
+    <Compile Include="Tweaks\CursorManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MODGEN\CHANGELOG.md" />

@@ -1,14 +1,15 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using HarmonyLib;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace LaSiesta.Tweaks
 {
     [HarmonyPatch(typeof(Hud), "Awake")]
     public class ClockPatch
     {
-        private static Text timeText;
+        private static TextMeshProUGUI timeText;
         public static GameObject timeTextObject;
 
         static void Postfix(Hud __instance)
@@ -24,16 +25,30 @@ namespace LaSiesta.Tweaks
             timeTextObject = new GameObject("LaSiestaTimeText");
             timeTextObject.transform.SetParent(minimap.transform);
 
-            // Configuración del componente de texto
-            timeText = timeTextObject.AddComponent<Text>();
-            timeText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-            timeText.fontSize = 18;
+            timeText = timeTextObject.AddComponent<TextMeshProUGUI>();
+            timeText.font = getFontAsset("Valheim-AveriaSansLibre");
+            timeText.fontSize = ConfigurationFile.fontSize.Value;
             timeText.color = Color.white;
-            timeText.alignment = TextAnchor.UpperCenter;
+            timeText.alignment = TextAlignmentOptions.TopRight;
 
-            // Ajustar la posición debajo del minimapa
             RectTransform rectTransform = timeText.GetComponent<RectTransform>();
-            rectTransform.anchoredPosition = new Vector2(70, -150);
+            rectTransform.anchoredPosition = new Vector2(ConfigurationFile.xPosClock.Value, ConfigurationFile.yPosClock.Value);
+        }
+        
+        private static TMP_FontAsset getFontAsset(String name)
+        {
+            Logger.Log($"Finding {name} font...");
+            var allFonts = Resources.FindObjectsOfTypeAll<TMP_FontAsset>();
+            foreach (var font in allFonts)
+            {
+                if (font.name == name)
+                {
+                    Logger.Log($"{name} font found.");
+                    return font;
+                }
+            }
+            Logger.LogError($"{name} font NOT found.");
+            return null;
         }
 
         [HarmonyPatch(typeof(Hud), "Update")]
@@ -50,17 +65,14 @@ namespace LaSiesta.Tweaks
                 }
             }
 
-            // Método para obtener la hora del juego en formato hh:mm
             private static string GetCurrentGameTime()
             {
-                // Obtener la instancia de EnvMan
                 EnvMan envMan = EnvMan.instance;
                 if (envMan == null)
                 {
-                    return "00:00";  // Valor por defecto si no se puede obtener la hora
+                    return "00:00";
                 }
 
-                // Usar reflexión para acceder al campo privado 'm_smoothDayFraction'
                 FieldInfo dayFractionField = typeof(EnvMan).GetField("m_smoothDayFraction", BindingFlags.NonPublic | BindingFlags.Instance);
                 if (dayFractionField == null)
                 {
@@ -68,14 +80,11 @@ namespace LaSiesta.Tweaks
                     return "00:00";
                 }
 
-                // Obtener el valor de m_smoothDayFraction
                 float smoothDayFraction = (float)dayFractionField.GetValue(envMan);
 
-                // Convertir el tiempo fraccionado en horas y minutos
                 int hours = (int)(smoothDayFraction * 24);              // Hora en formato de 24 horas
                 int minutes = (int)((smoothDayFraction * 1440) % 60);   // Minutos (1440 = 24 horas * 60 minutos)
 
-                // Formatear el resultado en hh22:mi
                 return $"{hours:D2}:{minutes:D2}";
             }
         }

@@ -16,7 +16,6 @@ namespace LaSiesta.Tweaks
         {
             if (siestaConfirmDialog != null)
             {
-                showCursor();
                 return;
             }
             
@@ -33,7 +32,7 @@ namespace LaSiesta.Tweaks
             btnYes.onClick.AddListener(() => {
                 Logger.Log("Yes button clicked");
                 siestaConfirmDialog.SetActive(false);
-                hideCursor();
+                CursorManager.hideCursor();
                 BedInteractPatch.skipToBeforeNight();
             });
             Button btnNo = btns[1];
@@ -41,20 +40,8 @@ namespace LaSiesta.Tweaks
             btnNo.onClick.AddListener(() => {
                 Logger.Log("No button clicked");
                 siestaConfirmDialog.SetActive(false);
-                hideCursor();
+                CursorManager.hideCursor();
             });
-        }
-
-        private static void showCursor()
-        {
-            InventoryGui.instance.Show(null);
-            InventoryGui.instance.transform.Find("root").parent.gameObject.SetActive(false);
-        }
-
-        private static void hideCursor()
-        {
-            InventoryGui.instance.transform.Find("root").parent.gameObject.SetActive(true);
-            InventoryGui.instance.Hide();
         }
     }
 
@@ -84,6 +71,7 @@ namespace LaSiesta.Tweaks
             {
                 if (BedInteractMenu.siestaConfirmDialog != null) {
                     BedInteractMenu.siestaConfirmDialog.SetActive(true);
+                    CursorManager.showCursor();
                     __result = true; // Returns successful interaction
                     return false; // Blocks running original code
                 }
@@ -105,8 +93,9 @@ namespace LaSiesta.Tweaks
             float comparison = dayFraction + (timeInHours / oneDay);
             Logger.Log($"old fraction: {dayFraction}, new fraction: {comparison}");
 
-            //Don't do if night coming. m_smoothDayFraction = 0,75 at 18:00. 
-            if (comparison < 0.75f)
+            //Don't do if night coming. m_smoothDayFraction = 0,75 at 18:00.
+            //Comparing with integer numbers
+            if ((int)(Math.Round(comparison-0.005, 2)*100) < 75)
             {
                 MessageHud.instance.ShowMessage(MessageHud.MessageType.Center, ConfigurationFile.sleepSiestaMessage.Value);
                 runningSiesta = true;

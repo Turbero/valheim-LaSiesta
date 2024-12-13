@@ -47,7 +47,7 @@ namespace LaSiesta
 
                 debug = config("1 - Config", "DebugMode", false, "Enabling/Disabling the debugging in the console (default = false)");
                 oneDayLength = config("1 - Config", "OneDayLength", 1800f, "Length of one game day in ticks. Careful when changing this value (default = 1800)");
-                oneHourLength = config("1 - Config", "OneHourLength", 90f, "Length of one game hour in ticks. Careful when changing this value (default = 90)");
+                oneHourLength = config("1 - Config", "OneHourLength", 85f, "Length of one game hour in ticks. Careful when changing this value (default = 90)");
                 tooCloseForSiesta = config("1 - Config", "TooCloseForSiestaText", "Can't take siesta yet, night is too close", "Text to show when night is too close for a siesta (override to translate if you need)");
 
                 siestaHours = config("2 - General", "SiestaHours", 2f, "Number of hours of each siesta (default = 2)");
@@ -55,9 +55,9 @@ namespace LaSiesta
                 sleepSiestaMessage = config("2 - General", "SleepSiestaMessage", "Enjoy the nap!", "Number of hours of each siesta");
 
                 showDayInfoOnScreen = config("3 - Clock", "ShowDayInfoOnScreen", false, "Shows day attributes on the screen (default = false)", false);
-                xPosClock = config("3 - Clock", "xPosClock", 70, "Horizontal Position of the clock from the minimap (default = 70)", false);
+                xPosClock = config("3 - Clock", "xPosClock", 44, "Horizontal Position of the clock from the minimap (default = 70)", false);
                 yPosClock = config("3 - Clock", "yPosClock", -150, "Vertical Position of the clock from the minimap (default = -150)", false);
-                fontSize = config("3 - Clock", "FontSize", 18, "Clock font size (default = 18)", false);
+                fontSize = config("3 - Clock", "FontSize", 28, "Clock font size (default = 18)", false);
 
                 sleepSiestaQuestion.SettingChanged += OnSettingChanged;
                 sleepSiestaMessage.SettingChanged += OnSettingChanged;
@@ -71,9 +71,12 @@ namespace LaSiesta
         {
             RectTransform clockRT = ClockPatch.timeTextObject.transform as RectTransform;
             clockRT.anchoredPosition = new Vector2(xPosClock.Value, yPosClock.Value);
-            clockRT.GetComponent<Text>().fontSize = fontSize.Value;
-            BedInteractMenu.siestaConfirmDialog.GetComponentInChildren<UIGroupHandler>().
-                transform.Find("Exit").GetComponentInChildren<TextMeshProUGUI>().text = sleepSiestaQuestion.Value;
+            clockRT.GetComponent<TextMeshProUGUI>().fontSize = fontSize.Value;
+            if (BedInteractMenu.siestaConfirmDialog != null)
+            {
+                BedInteractMenu.siestaConfirmDialog.GetComponentInChildren<UIGroupHandler>().transform.Find("Exit")
+                    .GetComponentInChildren<TextMeshProUGUI>().text = sleepSiestaQuestion.Value;
+            }
         }
 
         private static ConfigEntry<T> config<T>(string group, string name, T value, string description,
