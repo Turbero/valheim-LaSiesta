@@ -8,17 +8,20 @@ using UnityEngine.UI;
 
 namespace LaSiesta.Tweaks
 {
-
     public class BedInteractMenu
     {
         public static GameObject siestaConfirmDialog;
 
         public static void loadDialog()
-        {            
-            if (siestaConfirmDialog != null) return;
-            Logger.Log("Postfix definiendo siestaConfirmDialog");
-
-            siestaConfirmDialog = GameObject.Instantiate(Menu.instance.m_quitDialog.gameObject, Menu.instance.m_quitDialog.transform.parent.parent);
+        {
+            if (siestaConfirmDialog != null)
+            {
+                showCursor();
+                return;
+            }
+            
+            Logger.Log("Postfix siestaConfirmDialog");
+            siestaConfirmDialog = GameObject.Instantiate(Menu.instance.m_quitDialog.gameObject, GameObject.Find("_GameMain/LoadingGUI/PixelFix/IngameGui").transform);
             siestaConfirmDialog.name = "SiestaConfirmDialog";
 
             UIGroupHandler dialog = siestaConfirmDialog.GetComponentInChildren<UIGroupHandler>();
@@ -30,7 +33,7 @@ namespace LaSiesta.Tweaks
             btnYes.onClick.AddListener(() => {
                 Logger.Log("Yes button clicked");
                 siestaConfirmDialog.SetActive(false);
-                InventoryGui.instance.Hide();
+                hideCursor();
                 BedInteractPatch.skipToBeforeNight();
             });
             Button btnNo = btns[1];
@@ -38,8 +41,20 @@ namespace LaSiesta.Tweaks
             btnNo.onClick.AddListener(() => {
                 Logger.Log("No button clicked");
                 siestaConfirmDialog.SetActive(false);
-                InventoryGui.instance.Hide();
+                hideCursor();
             });
+        }
+
+        private static void showCursor()
+        {
+            InventoryGui.instance.Show(null);
+            InventoryGui.instance.transform.Find("root").parent.gameObject.SetActive(false);
+        }
+
+        private static void hideCursor()
+        {
+            InventoryGui.instance.transform.Find("root").parent.gameObject.SetActive(true);
+            InventoryGui.instance.Hide();
         }
     }
 
@@ -69,7 +84,6 @@ namespace LaSiesta.Tweaks
             {
                 if (BedInteractMenu.siestaConfirmDialog != null) {
                     BedInteractMenu.siestaConfirmDialog.SetActive(true);
-                    InventoryGui.instance.Show(null);
                     __result = true; // Returns successful interaction
                     return false; // Blocks running original code
                 }
