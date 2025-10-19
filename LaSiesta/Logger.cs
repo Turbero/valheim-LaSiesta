@@ -4,7 +4,7 @@ namespace LaSiesta
 {
     public static class Logger
     {
-        public static ManualLogSource logger = BepInEx.Logging.Logger.CreateLogSource(LaSiesta.NAME);
+        private static readonly ManualLogSource logger = BepInEx.Logging.Logger.CreateLogSource(LaSiesta.NAME);
         internal static void Log(object s)
         {
             if (!ConfigurationFile.debug.Value)

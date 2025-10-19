@@ -18,30 +18,50 @@ namespace LaSiesta.Tweaks
             {
                 return;
             }
-            
-            Logger.Log("Postfix siestaConfirmDialog");
-            siestaConfirmDialog = GameObject.Instantiate(Menu.instance.m_quitDialog.gameObject, GameObject.Find("_GameMain/LoadingGUI/PixelFix/IngameGui").transform);
+
+            Logger.Log("Creating siestaConfirmDialog...");
+            siestaConfirmDialog = GameObject.Instantiate(
+                GameObject.Find("_GameMain/LoadingGUI/PixelFix/IngameGui/Menu/MenuRoot/ExitConfirm"),
+                GameObject.Find("_GameMain/LoadingGUI/PixelFix/IngameGui/Menu/MenuRoot").transform);
             siestaConfirmDialog.name = "SiestaConfirmDialog";
 
             UIGroupHandler dialog = siestaConfirmDialog.GetComponentInChildren<UIGroupHandler>();
-            dialog.transform.Find("Exit").GetComponentInChildren<TextMeshProUGUI>().text = ConfigurationFile.sleepSiestaQuestion.Value;
+            dialog.transform.Find("Exit").GetComponentInChildren<TextMeshProUGUI>().text =
+                ConfigurationFile.sleepSiestaQuestion.Value;
 
             Button[] btns = dialog.GetComponentsInChildren<Button>();
             Button btnYes = btns[0];
             btnYes.onClick = new Button.ButtonClickedEvent();
-            btnYes.onClick.AddListener(() => {
+            btnYes.onClick.AddListener(() =>
+            {
                 Logger.Log("Yes button clicked");
-                siestaConfirmDialog.SetActive(false);
-                CursorManager.hideCursor();
+                showSiestaDialog(false);
                 BedInteractPatch.skipToBeforeNight();
             });
             Button btnNo = btns[1];
             btnNo.onClick = new Button.ButtonClickedEvent();
-            btnNo.onClick.AddListener(() => {
+            btnNo.onClick.AddListener(() =>
+            {
                 Logger.Log("No button clicked");
-                siestaConfirmDialog.SetActive(false);
-                CursorManager.hideCursor();
+                showSiestaDialog(false);
             });
+        }
+
+        public static void showSiestaDialog(bool show)
+        {
+            siestaConfirmDialog.SetActive(show);
+            if (show)
+            {
+                Menu.instance.Show();
+                Menu.instance.transform.Find("MenuRoot/Menu/MenuEntries").gameObject.SetActive(false);
+                Menu.instance.transform.Find("MenuRoot/Menu/ornament").gameObject.SetActive(false);
+            }
+            else
+            {
+                Menu.instance.transform.Find("MenuRoot/Menu/MenuEntries").gameObject.SetActive(true);
+                Menu.instance.transform.Find("MenuRoot/Menu/ornament").gameObject.SetActive(true);
+                Menu.instance.Hide();
+            }
         }
     }
 
@@ -52,6 +72,7 @@ namespace LaSiesta.Tweaks
 
         public static bool Prefix(Humanoid human, bool repeat, bool alt, ref bool __result)
         {
+            Logger.Log("BedInteractPatch Prefix...");
             BedInteractMenu.loadDialog();
 
             if (repeat)
@@ -66,12 +87,13 @@ namespace LaSiesta.Tweaks
                 __result = false;
                 return false;
             }
-
+            Logger.Log("Checking IsNight...");
             if (!EnvMan.IsNight())
             {
-                if (BedInteractMenu.siestaConfirmDialog != null) {
-                    BedInteractMenu.siestaConfirmDialog.SetActive(true);
-                    CursorManager.showCursor();
+                Logger.Log("Showing siestaConfirmDialog...");
+                if (BedInteractMenu.siestaConfirmDialog != null)
+                {
+                    BedInteractMenu.showSiestaDialog(true);
                     __result = true; // Returns successful interaction
                     return false; // Blocks running original code
                 }
@@ -101,6 +123,7 @@ namespace LaSiesta.Tweaks
                 runningSiesta = true;
                 turnCheatMode(true);
                 Console.instance.TryRunCommand($"skiptime {timeInHours}", true);
+                Game.instance.GetPlayerProfile().m_playerStats.m_stats.IncrementOrSet(PlayerStatType.Cheats, -1);
                 turnCheatMode(false);
                 _ = WaitForSecondsAsyncOnly(10);
             } else
