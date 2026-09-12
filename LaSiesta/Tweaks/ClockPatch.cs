@@ -56,8 +56,8 @@ namespace LaSiesta.Tweaks
         {            
             static void Postfix()
             {
-                timeTextObject.SetActive(ConfigurationFile.showDayInfoOnScreen.Value);
-                if (!ConfigurationFile.showDayInfoOnScreen.Value) return;
+                timeTextObject.SetActive(ConfigurationFile.showDayTimeOnScreen.Value);
+                if (!ConfigurationFile.showDayTimeOnScreen.Value) return;
 
                 if (timeText != null)
                 {

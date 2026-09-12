@@ -22,7 +22,7 @@ namespace LaSiesta
         public static ConfigEntry<string> sleepSiestaQuestion;
         public static ConfigEntry<string> sleepSiestaMessage;
 
-        public static ConfigEntry<bool> showDayInfoOnScreen;
+        public static ConfigEntry<bool> showDayTimeOnScreen;
         public static ConfigEntry<int> xPosClock;
         public static ConfigEntry<int> yPosClock;
         public static ConfigEntry<int> fontSize;
@@ -54,7 +54,7 @@ namespace LaSiesta
                 sleepSiestaQuestion = config("2 - General", "SleepSiestaQuestion", "Sleep siesta?", "Number of hours of each siesta");
                 sleepSiestaMessage = config("2 - General", "SleepSiestaMessage", "Enjoy the nap!", "Number of hours of each siesta");
 
-                showDayInfoOnScreen = config("3 - Clock", "ShowDayInfoOnScreen", false, "Shows day attributes on the screen (default = false)", false);
+                showDayTimeOnScreen = config("3 - Clock", "ShowDayTimeOnScreen", false, "Shows day time on the screen (default = false)", false);
                 xPosClock = config("3 - Clock", "xPosClock", 44, "Horizontal Position of the clock from the minimap (default = 70)", false);
                 yPosClock = config("3 - Clock", "yPosClock", -150, "Vertical Position of the clock from the minimap (default = -150)", false);
                 fontSize = config("3 - Clock", "FontSize", 28, "Clock font size (default = 18)", false);

@@ -123,7 +123,7 @@ namespace LaSiesta.Tweaks
                 runningSiesta = true;
                 turnCheatMode(true);
                 Console.instance.TryRunCommand($"skiptime {timeInHours}", true);
-                Game.instance.GetPlayerProfile().m_playerStats.m_stats.IncrementOrSet(PlayerStatType.Cheats, -1);
+                Game.instance.GetPlayerProfile().m_playerStats[0].m_stats.IncrementOrSet(PlayerStatType.Cheats, -1);
                 turnCheatMode(false);
                 _ = WaitForSecondsAsyncOnly(10);
             } else
@@ -134,15 +134,13 @@ namespace LaSiesta.Tweaks
 
         private static async Task WaitForSecondsAsyncOnly(float seconds)
         {
-            await Task.Delay((int)(Math.Max(0f, seconds) * 1000)); // to miliseconds
+            await Task.Delay((int)(Math.Max(0f, seconds) * 1000)); // to milliseconds
             runningSiesta = false;
         }
 
         private static void turnCheatMode(bool cheat)
         {
-            Type terminalType = typeof(Terminal); // m_cheat is in Terminal
-            FieldInfo cheatField = terminalType.GetField("m_cheat", BindingFlags.NonPublic | BindingFlags.Static);
-            cheatField.SetValue(Console.instance, cheat);
+            Terminal.m_cheat = cheat;
             Logger.Log($"** CheatMode {cheat}");
         }
     }
