@@ -1,10 +1,14 @@
 ### CHANGELOG
 
+## 1.0.4
+
+* Recompiled for compatibility with 1.0
+
 ## 1.0.3
 
 * Recompiled for Call To Arms update compatibility
 * Fixed issue that was not showing UI and breaking menu behaviour
-* Now it doesn't count as a cheat in the player stats
+* Now it doesn't increase the stat "cheats" in the player stats
 
 ## 1.0.2
 
